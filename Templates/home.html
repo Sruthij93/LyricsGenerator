@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}  
+
+<br/>
+<!--<p style="text-align: center; color: black; font-weight: bold; font-color:#011647">
+Search Faculty Experts by Research Interests </p> -->
+<br/><br/>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>    
+        .lyrics-container {
+            text-align: center; /* Center the content */
+        }
+
+        .lyrics-container ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0; /* Remove default padding */
+        }
+        /* Styling for the drop down arrow*/
+        .custom-select {
+            position: relative;
+        }
+
+        .custom-select::after {
+            content: "\25BC"; /* Unicode character for a downward arrow */
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }  
+        /* on hover clear search */
+        #clearSearch:hover {
+            background-color: #f8f9fa; /* Change to your desired background color */
+        }
+        th.column5, td.column5 {
+            width: 10%;
+            background-color: blue;
+			color : white;
+            border-top: 1px solid white;
+        }
+        .edit-button {
+            background-color: #007BFF; /* Green background color */
+            color: white; /* White text color */
+            padding: 10px 15px; /* Add padding for better appearance */
+            border: none; /* Remove border */
+            border-radius: 4px; /* Optional: Add border radius for rounded corners */
+            cursor: pointer; /* Add cursor style */
+        }
+        .submit-button {
+            position: relative;
+            right: 20px; /* Adjust right position as needed */
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: right;
+            text-align: center;  
+            align : right; 
+        }      
+    </style>
+</head>
+
+
+
+
+<body>    
+    
+    <div class="bbbootstrap">
+        <div class="container">
+            
+            <div class="row">
+                <div class="col-lg-12 card-margin">
+                    <div class="card-body p-0">
+                        <form id="search-form" method='POST' action='generate_lyrics'>
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row no-gutters" >
+                                        <div class="col-lg-2 col-md-2 col-sm-12 p-0 custom-select">
+                                            <select class="form-control" id="artist" name="artist" >
+                                                <option disabled="true" seldected>--- Choose the Artist style ---</option>
+                                                <option value="Ariana_Grande" {% if artist == "Ariana_Grande" %}selected{% endif %}>Ariana Grande</option>
+                                                <option value="Ed_Sheeran" {% if artist == "Ed_Sheeran" %}selected{% endif %}>Ed Sheeran</option>
+                                                <option value="Justin_Bieber" {% if artist == "Justin_Bieber" %}selected{% endif %}>Justin Bieber</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="col-lg-6 col-md-5 col-sm-12 p-0 form-group">
+                                            <input type="text" placeholder="Enter some exmaple prompt to generate the text from the category etc." class="form-control" id="prompt" name="prompt" value="{{prompt}}">
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12 p-0 custom-select">
+                                            <select class="form-control" id="genre" name="genre" >
+                                                <option disabled="true" selected>--- Choose the genre ---</option>
+                                                <option value="Pop" {% if genre == "Pop" %}selected{% endif %}>Pop</option>
+                                                <option value="Rap" {% if genre == "Rap" %}selected{% endif %}>Rap</option>
+                                                <option value="edm" {% if genre == "edm" %}selected{% endif %}>EDM</option>
+                                                <!--<option value="Edm" {% if new_search_category == "Edm" %}selected{% endif %}>Edm</option>
+                                                <option value="R&B" {% if new_search_category == "R&B" %}selected{% endif %}>R&B</option>
+                                                <option value="Latin" {% if new_search_category == "Latin" %}selected{% endif %}>Latin</option>-->
+                                            </select>
+                                        </div>
+        
+                                    </div>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="display: flex; justify-content: center; font-weight: bold; align-items: center; flex-direction: column; height: 10vh; font-size: 18px; color: #007bff; margin-bottom: 20px;">
+
+            {% csrf_token %}
+                <button type="submit" id="submitButton" class="btn btn-primary submit-button" style="width: 300px;">Generate the Lyrics</button>
+        </form>
+    </div> 
+
+
+
+
+    
+            
+    {% if lyrics_list %}
+        <div class="lyrics-container">
+            <h1>Generated Lyrics</h1>
+            <br><br>
+            <ul>
+                {% for line in lyrics_list %}
+                    <li>{{ line|linebreaks }}</li>  <!-- Use linebreaks filter to preserve newline characters -->
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
+
+    <div style="display: flex; justify-content: center; font-weight: bold; align-items: center; flex-direction: column; height: 1vh; ">
+    </div> 
+
+    
+
+</body>
+{% endblock %}
